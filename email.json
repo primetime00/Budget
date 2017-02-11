@@ -1,4 +1,5 @@
 {
   "user":"dead@beef.com",
-  "pass":"deadbeef"
+  "pass":"deadbeef",
+  "subscribers" : ["dead@beef.com"]
 }
