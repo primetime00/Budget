@@ -1,0 +1,9 @@
+{
+  "month": 2,
+  "income": [
+    {
+      "name" : "test",
+      "amount" : 0
+    }
+  ]
+}
