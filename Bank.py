@@ -12,6 +12,7 @@ class Bank:
         self.accountName = ""
         self.expenses = None
         self.exclusions = None
+        self.debug = True
 
     def requestTransactions(self):
         client = Client(client_id=self.credentials["plaid"]["client"], secret=self.credentials["plaid"]["secret"])
@@ -28,7 +29,11 @@ class Bank:
         token = data['access_token']
 
         client = Client(client_id=self.credentials["plaid"]["client"], secret=self.credentials["plaid"]["secret"], access_token=token)
-        options = {'pending': True, 'gte': self.gte}
+        #options = {'pending': True, 'gte': self.gte}
+        if self.debug == True:
+            options = {'pending': True, 'gte': '2017/01/01'}
+        else:
+            options = {'pending': True, 'gte': self.gte}
         response = client.connect_get(opts=options)
         self.data = response.json()
 
@@ -38,6 +43,13 @@ class Bank:
         transactions = self.data['transactions']
         id = self.getMainId(accounts)
         self.transactions = self.filterTransactions(id, transactions)
+        if self.debug == True:
+            from pprint import pprint
+            with open(self.bank+".log", "w") as fin:
+                for trans in self.transactions:
+                    fin.write('{}, "{}", {}\n'.format(trans["date"], trans["name"], trans["amount"]))
+
+
 
 
     def getMainId(self, accounts):
@@ -64,8 +76,8 @@ class Bank:
     def getAmount(self, transaction, expenseNames):
         print(transaction["name"] + ", " + str(transaction["amount"]))
         for expenseName in expenseNames:
-            print("------COMPARING {} to {}".format(expenseName, transaction["name"]))
             if expenseName.lower() in transaction["name"].lower():
+                print("------Excluding transaction (expense) {}".format(transaction["name"]))
                 return 0
         return transaction["amount"]
 

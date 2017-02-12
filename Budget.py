@@ -8,6 +8,7 @@ class Budget:
         self.expenses = self.readExpenses()
         self.exclusions = self.readExclusions()
         self.credentials = self.readCredentials()
+        self.email = self.readEmail()
 
     def readFile(self, fname):
         data = {}
@@ -30,6 +31,10 @@ class Budget:
     def readCredentials(self):
         return self.readFile("credentials.json")
 
+    def readEmail(self):
+        return self.readFile("email.json")
+
+
     def getExpenses(self):
         return self.expenses
 
@@ -38,6 +43,10 @@ class Budget:
 
     def getCredentials(self):
         return self.credentials
+
+    def getEmail(self):
+        return self.email
+
 
     def getCalculatedTotal(self):
         totalExpense = 0
