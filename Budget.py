@@ -47,6 +47,14 @@ class Budget:
     def getEmail(self):
         return self.email
 
+    def updateCredentials(self, credentials):
+        if "token" in self.credentials and credentials["token"] == self.credentials["token"]:
+            return
+        with open("credentials.json", "w") as fin:
+            json.dump(credentials, fin)
+        self.credentials = credentials
+
+
 
     def getCalculatedTotal(self):
         totalExpense = 0

@@ -12,24 +12,27 @@ class Bank:
         self.accountName = ""
         self.expenses = None
         self.exclusions = None
-        self.debug = True
+        self.debug = False
 
     def requestTransactions(self):
-        client = Client(client_id=self.credentials["plaid"]["client"], secret=self.credentials["plaid"]["secret"])
-        data = ""
-        try:
-            response = client.connect(self.bank, {
-                'username': self.login,
-                'password': self.password
-            })
-            data = response.json()
-        except plaid_errors.UnauthorizedError:
-            print("AHHH")
-            exit()
-        token = data['access_token']
+        if "token" not in self.credentials["plaid"]:
+            client = Client(client_id=self.credentials["plaid"]["client"], secret=self.credentials["plaid"]["secret"])
+            data = ""
+            try:
+                response = client.connect(self.bank, {
+                    'username': self.login,
+                    'password': self.password
+                })
+                data = response.json()
+            except plaid_errors.UnauthorizedError as e:
+                print("AHHH")
+                print(e.message)
+                exit()
+            token = data['access_token']
+            self.credentials["plaid"]["token"] = token
 
-        client = Client(client_id=self.credentials["plaid"]["client"], secret=self.credentials["plaid"]["secret"], access_token=token)
-        #options = {'pending': True, 'gte': self.gte}
+
+        client = Client(client_id=self.credentials["plaid"]["client"], secret=self.credentials["plaid"]["secret"], access_token=self.credentials["plaid"]["token"])
         if self.debug == True:
             options = {'pending': True, 'gte': '2017/01/01'}
         else:
@@ -110,3 +113,6 @@ class Bank:
             if bank["name"] == self.bank:
                 return (bank["user"], bank["pass"])
         raise Exception("Cannot find bank!")
+
+    def getCredentials(self):
+        return self.credentials

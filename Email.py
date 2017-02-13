@@ -30,9 +30,9 @@ class Email:
             server.login(gmail_user, gmail_pwd)
             server.sendmail(gmail_user, recipient if type(recipient) is list else [recipient], msg.as_string())
             server.close()
-            print 'successfully sent the mail'
+            print('successfully sent the mail')
         except:
-            print "failed to send mail"
+            print("failed to send mail")
 
     def sendReport(self, balance):
         bstr = format(balance, '.2f')
